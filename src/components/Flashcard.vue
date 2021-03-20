@@ -1,6 +1,16 @@
 <template>
   <div>
     <div class="wholeComponent" v-if="!state.isLoading">
+      <section class="changeDeckName">
+        <h1 style="margin-top: 5%">
+          Deck name:
+        </h1>
+        <input
+            class="DeckName"
+            placeholder="Name your deck"
+            v-model="state.folderName"
+        >
+      </section>
       <div class="CreateCard">
         <div class="listOfFlashcards">
           <div  class="flashcard"
@@ -24,22 +34,22 @@
           <p class="buttonText">AddFlashcard</p>
         </button>
       </div>
+      </div>
+        <div class="adder">
+          <button v-if="FolderChosen.value !== ''" class="button" @click="CreateDeck">Create Deck</button>
+          <p v-else>Name your folder</p>
+        </div>
+      </div>
+    <div v-else>
+      loading/..
     </div>
-    <div class="adder">
-      <button v-if="FolderChosen.value !== ''" class="button" @click="CreateDeck">Create Deck</button>
-      <p v-else>Name your folder</p>
-    </div>
-  </div>
-  <div v-else>
-    loading/..
-  </div>
   </div>
 
 
 </template>
 
 <script>
-import getFlashcardsFromGivenFolder from '../utilities/mixins/getFlashcardsFromFolder'
+import checkToSeeChosenFolder from "@/utilities/externalFunctions/checkToSeeChosenFolder";
 import db from '../utilities/db'
 import {reactive, ref, computed, onMounted, watch} from 'vue';
 import { useStore } from 'vuex'
@@ -48,35 +58,29 @@ import { useStore } from 'vuex'
 export default {
   name: "Flashcard",
 
-  setup() {
+  setup: function () {
+
+    const store = useStore();
 
     const FlashcardRef = reactive(
-        db.database().ref('flashcards/' + 'flashcards')
+        db.database().ref('user_1/flashcards/')
     )
 
     const FolderChosen = ref('')
 
-    const store = useStore();
 
     const state = reactive({
       addNew: false,
-      isLoading: true,
+      isLoading: false,
       word: '',
       translation: '',
       linkGraphic: '',
-      chosenFolder: '',
-      flashcardsList: []
+      folderName: '',
+      flashcardsList: [],
     })
 
-    const getFolderName = computed(() => {
 
-      FolderChosen.value = store.state.ChosenFolder
-      console.log(state.flashcardsList)
-    });
 
-    // watch([inputWord, inputTranslate], (newList, prevList) => {
-    //   AddNewFlashcard()
-    // })
 
     function removeflashcard(index) {
       state.flashcardsList.splice(index, 1)
@@ -85,52 +89,80 @@ export default {
     const AddNewFlashcard = () => {
 
       const flashcard = {
-        basicWord: state.word,
-        linkToGraphic: state.linkGraphic,
-        translatedWord: state.translation,
+        basicWord: '',
+        linkToGraphic: '',
+        translatedWord: '',
       }
 
       state.flashcardsList.push(flashcard)
-      console.log(state.flashcardsList)
     }
 
     onMounted(() => {
-      getFlashcardsFromGivenFolder()
+      getFlashcardsFromGivenFolder();
+      checkToSeeChosenFolder();
     })
-
 
 
     const getFlashcardsFromGivenFolder = () => {
 
+      if (store.state.ChosenFolder !== null) {
+        let FolderObject = store.state.ChosenFolder
+        state.flashcardsList = FolderObject.flashcards
+        state.folderName = FolderObject.name
+      }
 
-          FlashcardRef.once('value').then((snapshot) => {
-            const data = snapshot.val();
 
-            let flashcards = []
+        // FlashcardRef.child(store.state.ChosenFolder).once('value').then((snapshot) => {
+        // const data = snapshot.val();
+        //
+        // let flashcards = []
+        //
+        //   Object.keys(data).forEach(key => {
+        //     flashcards.push({
+        //       id: key,
+        //       basicWord: data[key].basicWord,
+        //       linkToGraphic: data[key].linkToGraphic,
+        //       translatedWord: data[key].translatedWord
+        //     })
+        //   })
+        //   state.flashcardsList = flashcards
+        // })
 
-            Object.keys(data).forEach(key => {
-              flashcards.push({
-                id: key,
-                basicWord: data[key].basicWord,
-                linkToGraphic: data[key].linkToGraphic,
-                translatedWord: data[key].translatedWord
-              })
-            })
-            state.flashcardsList = flashcards
-            state.flashcardsList.push({
-              basicWord: '',
-              linkToGraphic: '',
-              translatedWord: '',
-            })
-            state.isLoading = false
-          })
-        }
+      state.flashcardsList.push({
+        basicWord: '',
+        linkToGraphic: '',
+        translatedWord: '',
+      })
+      state.isLoading = false
+    }
 
 
     const CreateDeck = () => {
 
       state.flashcardsList = state.flashcardsList.filter(createValidFlashcards);
-      FlashcardRef.set(state.flashcardsList)
+
+      if (store.state.CreationMode) {
+        const FlashcardsObject = {
+          name: state.folderName,
+          flashcards: state.flashcardsList
+        }
+        FlashcardRef.push(
+          FlashcardsObject
+        )
+      }
+      else {
+        console.log(store.state.ChosenFolder.id)
+        FlashcardRef.child(store.state.ChosenFolder.id).update({name: state.folderName, flashcards: state.flashcardsList})
+      }
+
+
+
+      // FlashcardRef.set(state.flashcardsList);
+
+      // var updates = {};
+      // updates['/flashcards/' ] = state.chosenFolder;
+      // updates['/UserFolders/' + store.state.ChosenFolder] = state.chosenFolder
+      // db.database().ref('user_1/UserFolders').update(state.chosenFolder)
 
     }
 
@@ -139,13 +171,11 @@ export default {
     }
 
 
-
     return {
       FlashcardRef,
       FolderChosen,
       state,
       CreateDeck,
-      getFolderName,
       AddNewFlashcard,
       removeflashcard
     }
@@ -158,6 +188,25 @@ export default {
 .wholeComponent {
   width: 100%;
   height: 100%;
+  .changeDeckName {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .DeckName {
+      display: inline-block;
+      font-size: 32px;
+      text-align: start;
+      margin: 5%;
+      width: 30%;
+      border: none;
+      border-bottom: solid black;
+      //resize: none;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
   .adder {
     width: 100%;
     height: 100%;

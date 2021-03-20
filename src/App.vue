@@ -1,7 +1,6 @@
 <template>
   <div id="nav">
     <router-link class="home" to="/">Home</router-link>
-    <router-link class="flashcards" to="/flashcardSurfer">Flashcards</router-link>
     <router-link class="about" to="/about">About</router-link>
   </div>
   <router-view/>
@@ -15,8 +14,10 @@
 <style scoped lang="scss">
 
 #nav {
-  margin: 0;
-  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   background: #00ba21;
   width: 100%;
   height: 7vh;
