@@ -1,11 +1,78 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&family=Poppins:wght@200&display=swap');
 a {
   text-decoration: none;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  //font-family: 'Oswald', sans-serif;
+  //font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
+
+.link {
+  text-decoration: none;
+  color: black;
+}
+
+.normalButton {
+  font-size: 24px;
+  border-radius: 7px;
+  //color: #ffffff;
+  //box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
+  //transition: 0.4s ease-out;
+  margin: 4px;
+  padding: 7px;
+  border: none;
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.7);
+  &:hover {
+    box-shadow: 7px 7px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    @media (max-width: 768px) {
+      box-shadow: 3px 3px rgba(0, 0, 0, 0.7);
+    }
+  }
+  //&:focus{
+  //  outline: 0;
+  //  border: none;
+  //}
+}
+
+.goBtn {
+  font-size: 24px;
+  border-radius: 7px;
+  margin: 4px;
+  padding: 7px;
+  background-color: #f4f4f2;
+  border: none;
+}
+
+.selectField {
+  border: none;
+  text-align: center;
+  border-bottom: solid 2px black;
+  -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+  background: #fcfcfc;
+  min-width: 5%;
+  padding: 0.5rem;
+  font-size: 1em;
+}
+
+.title {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Info {
+  font-size: 36px;
+  margin: auto;
+}
+
+// Variables
+$green-main: #00ba21;
+$green-btn: #00e226

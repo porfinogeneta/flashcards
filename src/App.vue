@@ -1,47 +1,63 @@
 <template>
-  <div id="nav">
-    <router-link class="home" to="/">Home</router-link>
-    <router-link class="about" to="/about">About</router-link>
-  </div>
+  <meta charset="utf-8">
+  <Navbar/>
   <router-view/>
+  <Loading v-show="isLoading" :load-description="'Loading...'"/>
 </template>
 
 <script>
+import {onBeforeMount, computed, ref} from 'vue'
+import { useRouter} from 'vue-router';
+import fire from './utilities/fire';
+import { useStore } from 'vuex'
+import Navbar from "@/components/Navbar";
+import Loading from "@/LoadingComponents/Loading";
+
+export default {
+  name: "App",
+  components: {Loading, Navbar},
+  setup() {
+
+    const store = useStore()
+
+    const router = useRouter()
+
+    const isLoading = ref(false)
+
+    // const isLoggedIn = computed(() => store.state.UserData.isLoggedIn)
+
+
+    onBeforeMount(() => {
+      isLoading.value = true
+      fire.auth().onAuthStateChanged((user) => {
+        if (user) {
+          console.log('logged')
+          router.replace('/')
+          store.commit('ChangeIsLoggedIn', true)
+          store.commit('ChangeAuthUser', user)
+        }else {
+          console.log('not logged')
+          router.replace('/login')
+          store.commit('ChangeIsLoggedIn', false)
+          store.commit('ChangeAuthUser', null)
+        }
+        isLoading.value = false
+      })
+    })
+
+    return {
+      isLoading
+    }
+  }
+}
 
 </script>
 
 
-<style scoped lang="scss">
-
-#nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #00ba21;
-  width: 100%;
-  height: 7vh;
-  font-weight: bold;
-  font-size: 30px;
-  align-items: center;
-  .home {
-    position: absolute;
-    top: 2vh;
-    color: #f5f1f1;
-    left: 5%;
-  }
-  .about {
-    position: absolute;
-    top: 2vh;
-    color: #f5f1f1;
-    right: 5%;
-  }
-  .flashcards {
-    position: absolute;
-    top: 2vh;
-    color: #f5f1f1;
-    left: 45%;
-    right: 45%;
-  }
+<style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
 }
+
 </style>

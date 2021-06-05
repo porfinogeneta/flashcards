@@ -1,12 +1,12 @@
 import {useRouter} from 'vue-router';
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
 
-export default function checkToSeeChosenFolder () {
+export default function checkToSeeChosenDeck (store) {
 
-    const store = useStore()
+    // const store = useStore()
     const router = useRouter()
 
-    if (!store.state.ChosenFolder) {
+    if (!store.state.ChosenDeck) {
         if (!store.state.CreationMode) {
             router.push('/')
         }

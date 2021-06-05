@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Flashcard from "@/components/Flashcard";
+import Flashcard from "@/components/FlashcardsEditing/Flashcard";
 
 
 export default {

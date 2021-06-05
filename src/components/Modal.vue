@@ -58,8 +58,6 @@ name: "Modal",
   transform: translate(-50%, -50%);
   z-index: 99;
 
-
-
   @media (max-width: 764px){
     width: 100%;
   }
@@ -69,6 +67,11 @@ name: "Modal",
     background: #FFF;
     padding: 32px;
     border-radius: 6px;
+    //width: clamp(20vw, 30vw, 100vw);
+
+  //.titleOfPopup {
+  //  display: flex;
+  //}
 
     header {
       font-size: 40px;
@@ -76,7 +79,6 @@ name: "Modal",
       text-align: center;
     }
     main {
-
     }
   }
 }
