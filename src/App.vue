@@ -1,6 +1,5 @@
 <template>
   <meta charset="utf-8">
-  Hello World!!!
   <Navbar/>
   <router-view/>
   <Loading v-show="isLoading" :load-description="'Loading...'"/>
