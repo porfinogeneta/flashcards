@@ -8,7 +8,7 @@ export default async function getUserFolders(userData, firebase) {
                  Folders.push({
                      id: key,
                      name: data[key].name,
-                     decs: data[key].decs
+                     // decs: data[key].decs
                  })
              })
          }

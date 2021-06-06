@@ -11,6 +11,9 @@
       <input class="inputBox enterData" type="password" placeholder="Password..." v-model="Password">
       <input type="submit" class="inputBox buttonLogin" value="Register">
     </form>
+    <section class="LoginLink">
+      <router-link to="/login" class="link">Login Here</router-link>
+    </section>
   </section>
 
 </template>
@@ -46,8 +49,8 @@ export default {
                 decsCreated: 0
               }
               AuthUserRef.child('UserMeta/').set(UserProfile)
-          },
-            router.push('/')
+              router.push('/')
+            },
           )
           .catch(err => console.log(err.message))
     }
@@ -64,8 +67,8 @@ export default {
                 decsCreated: 0
               }
               AuthUserRef.child('UserMeta/').set(UserProfile)
-          },
-            router.push('/')
+              router.push('/')
+            },
           )
           .catch(err => console.log(err.message))
     }
@@ -82,7 +85,7 @@ export default {
 
 <style scoped lang="scss">
 .LoginPage {
-  font-size: clamp(2vw, 3ch, 15vw);
+  font-size: 2ch;
   //background: #838383;
   flex-direction: column;
   //height: 90vh;
@@ -118,15 +121,17 @@ export default {
     display: flex;
     flex-direction: column;
     .inputBox {
-      font-size: clamp(2ch, 2vw, 10vw);
-      width: clamp(75vw,  20vw, 30vw);
+      font-size: 2.5ch;
+      max-width: 75vw;
       margin: 1.5vh;
       border-radius: 7px;
       padding: 7px;
 
     }
     .buttonLogin {
+      color: white;
       margin: auto;
+      width: 100%;
       border: none;
       background-color: #06d006;
       -webkit-transition: background-color 1s ease-out;
@@ -144,6 +149,15 @@ export default {
         outline: none;
         border: solid #0adb0a;
       }
+    }
+  }
+  .LoginLink {
+    font-size: 2.5ch;
+    border-bottom: solid black;
+    margin-top: 4vw;
+    color: black;
+    &:hover {
+      cursor: pointer;
     }
   }
 }

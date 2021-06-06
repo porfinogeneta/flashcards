@@ -7,13 +7,13 @@ import store from './store/index';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCogs, faRandom, faVolumeUp, faExchangeAlt,
     faPencilRuler, faPencilAlt, faEraser, faChalkboard,
-    faSpinner, faTrashAlt
+    faSpinner, faTrashAlt, faPlus
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faCogs, faRandom, faVolumeUp,
     faExchangeAlt, faPencilRuler, faPencilAlt,
-    faEraser, faChalkboard, faSpinner, faTrashAlt)
+    faEraser, faChalkboard, faSpinner, faTrashAlt, faPlus)
 
 
 

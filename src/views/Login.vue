@@ -56,8 +56,8 @@ export default {
                 decsCreated: 0
               }
               AuthUserRef.child('UserMeta/').set(UserProfile)
-          },
-            router.push('/')
+              router.push('/')
+            },
           )
           .catch(err => console.log(err.message))
     }
@@ -109,7 +109,7 @@ export default {
     display: flex;
     flex-direction: column;
     .inputBox {
-      font-size: 3ch;
+      font-size: 2.5ch;
       max-width: 75vw;
       margin: 1.5vh;
       border-radius: 7px;
@@ -139,7 +139,7 @@ export default {
     }
   }
   .RegisterLink {
-    font-size: 3ch;
+    font-size: 2.5ch;
     border-bottom: solid black;
     margin-top: 4vw;
     color: black;

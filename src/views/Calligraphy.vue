@@ -32,6 +32,7 @@
 
 <script>
 import {computed, onMounted, reactive} from "vue";
+import {useRouter} from 'vue-router'
 import {shuffle} from "@/utilities/externalFunctions/shuffle";
 import {useStore} from 'vuex'
 import checkToSeeChosenDeck from '../utilities/externalFunctions/checkToSeeChosenDeck'
@@ -47,7 +48,8 @@ export default {
   components: {DrawByTranslation, LookAndDraw, Redraw},
   setup() {
 
-    const store = useStore()
+    const store = useStore();
+    const router = useRouter()
 
     const state = reactive({
       flashcards: '',
@@ -129,14 +131,10 @@ export default {
     // keep tracks of what flashcard to show
     function getAnotherFlashcard(payload) {
 
-      if (state.Current === 'Done') {
-        return
-      }
-
       if (state.Current.mode === 3) {
         state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)
         if (state.CurrentFlashcards.length === 0){
-          state.Current = 'Done'
+          router.go(-1)
         }
       }
 

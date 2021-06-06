@@ -1,25 +1,34 @@
 <template>
   <div id="nav">
     <router-link class="home" to="/">Home</router-link>
-    <router-link class="about" to="/about">About</router-link>
-    <button class="logout" @click="Logout">Logout</button>
+<!--    <router-link class="about" to="/about">About</router-link>-->
+    <button v-if="store.state.UserData.isLoggedIn !== false" class="logout" @click="Logout">Logout</button>
   </div>
 </template>
 
 <script>
 import fire from '../utilities/fire';
+import {useStore} from 'vuex';
+import {ref} from 'vue';
 
 export default {
   name: "Navbar",
   setup() {
+
+    const store = useStore();
+
+    const isShowingPopUp = ref(false)
+
     function Logout() {
+
       fire
           .auth()
           .signOut()
           .then(() => alert('logout'))
     }
     return {
-      Logout
+      Logout,
+      store
     }
   }
 }

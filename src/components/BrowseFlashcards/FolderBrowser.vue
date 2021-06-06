@@ -6,9 +6,7 @@
             @click="AddFolder"
             class="Folder" id="adder"
         >
-          <p style="font-size: 120px">
-            +
-          </p>
+          <font-awesome-icon :icon="['fas', 'plus']" size="5x"></font-awesome-icon>
         </div>
       </section>
       <section v-for="folder in state.Folders" :key="folder">
@@ -69,7 +67,7 @@ export default {
     const AddFolder = async () => {
       state.isShowingPopUp = !state.isShowingPopUp
       if (state.isShowingPopUp === false && state.folderName){
-        var key = firebaseFolderRef.push().key // creates random key/id
+        let key = firebaseFolderRef.push().key // creates random key/id
         await firebaseFolderRef.child(key).set({ // sets given folder at this id
           name: state.folderName,
           // decs: []

@@ -2,9 +2,9 @@
   <div>
     <div class="wholeComponent" v-if="!state.isLoading">
       <section class="changeDeckName">
-        <h1 style="margin-top: 5%">
-          Deck name:
-        </h1>
+<!--        <h1 style="margin-top: 5%">-->
+<!--          Deck name:-->
+<!--        </h1>-->
         <input
             class="DeckName"
             placeholder="Name your deck"
@@ -12,10 +12,10 @@
         >
       </section>
       <section class="flashcardsMeta">
-        <h1 class="metaTitle">Your flashcards meta:</h1>
+<!--        <h1 class="metaTitle">Your flashcards meta:</h1>-->
         <div>
-          Choose alphabet type:
           <select class="selectField" name="alphabet" v-model="state.alphabetType">
+            <option value="" selected disabled hidden>Alphabet</option>
             <option class="option">
               Latin
             </option>
@@ -229,7 +229,7 @@ export default {
   font-size: clamp(1em, 2em, 3em);
   .flashcardsMeta {
     min-height: 5vh;
-    margin: 0 auto 2rem auto;
+    margin: 1em auto 1em auto;
     width: 80%;
     //background: #06d006;
     display: flex;
@@ -250,9 +250,9 @@ export default {
     .DeckName {
       //display: inline-block;
       font-size: 1em;
+      margin: 1em auto 1em auto;
       text-align: start;
-      margin: 5%;
-      width: 30%;
+      width: 80%;
       border: none;
       border-bottom: solid black;
       //resize: none;

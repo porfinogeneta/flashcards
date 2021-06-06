@@ -3,20 +3,19 @@
   <section v-else class="all">
     <section class="Info">
       <h1 class="title">{{Folder}}</h1>
-      <span class="Icon" @click="state.isShowingPopup = true">
-        <font-awesome-icon :icon="['fas', 'trash-alt']" size="2x"/>
-      </span>
+      <section class="UnderTitle" @click="MoveToCreation">
+        <div
+            class="" id="adder"
+        >
+          <font-awesome-icon :icon="['fas', 'plus']"></font-awesome-icon>
+        </div>
+        <span class="Icon" @click="state.isShowingPopup = true">
+          <font-awesome-icon :icon="['fas', 'trash-alt']" size="2x"/>
+        </span>
+      </section>
+
     </section>
     <section class="displayFolders" >
-      <section @click="MoveToCreation">
-        <div
-            class="slotButton Folder" id="adder"
-        >
-          <p style="font-size: 120px">
-            +
-          </p>
-        </div>
-      </section>
       <section v-for="deck in state.Decks" :key="deck">
         <div class="Folder" @click="WhatDirectory(deck)">
           {{deck.name}}
@@ -196,19 +195,46 @@ export default {
     border-radius: 7px 7px 7px 7px;
     padding: 1.5em;
     font-size: 2em;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    display: grid;
+    //justify-content: space-evenly;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        'title title'
+        'UnderTitle UnderTitle';
     .title {
-      border-bottom: solid 2px;
-    }
-    .Icon {
-      color: #9a9a9a;
-      &:hover {
-        color: crimson;
-        cursor: pointer;
+        margin-bottom: 7px;
+        border-bottom: solid 2px;
+      }
+    .UnderTitle {
+      grid-area: UnderTitle;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .Icon {
+        color: #9a9a9a;
+        &:hover {
+          color: crimson;
+          cursor: pointer;
+        }
+      }
+      #adder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: linear-gradient(to right, #838383, #6f7470);
+        color: #f5f1f1;
+        font-weight: 700;
+        width: 50px;
+        height: 50px;
+        border-radius: 7px 7px 7px 7px;
+        transition: 0.5s ease-in;
+        &:hover {
+          transform: scale(0.8);
+        }
       }
     }
+
   }
 
 
@@ -282,11 +308,7 @@ export default {
     }
 
   }
-  #adder {
-    background-image: linear-gradient(to right, #838383, #6f7470);
-    color: #f5f1f1;
-    font-weight: 700;
-  }
+
 }
 
 </style>
