@@ -55,7 +55,7 @@ export default {
       flashcards: '',
       name: '',
       Current: {},
-      currentFlashcardIndex: 0,
+      currentFlashcardIndex: 1,
       CurrentFlashcards: [],
       ReviewFlashcards: [],
       NextFlashcards: [],

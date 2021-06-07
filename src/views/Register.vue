@@ -49,8 +49,13 @@ export default {
                 decsCreated: 0
               }
               AuthUserRef.child('UserMeta/').set(UserProfile)
-              router.push('/')
+              // router.push('/')
             },
+          fire
+              .auth()
+              .signInWithEmailAndPassword(Email.value, Password.value)
+              .then(router.push('/'))
+              .catch(err => console.log(err.message))
           )
           .catch(err => console.log(err.message))
     }

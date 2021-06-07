@@ -15,8 +15,8 @@
 <!--        <h1 class="metaTitle">Your flashcards meta:</h1>-->
         <div>
           <select class="selectField" name="alphabet" v-model="state.alphabetType">
-            <option value="" selected disabled hidden>Alphabet</option>
-            <option class="option">
+<!--            <option value="" selected disabled hidden>Alphabet</option>-->
+            <option class="option" selected>
               Latin
             </option>
             <option class="option">
@@ -101,7 +101,7 @@ export default {
       word: '',
       translation: '',
       linkGraphic: '',
-      alphabetType: '',
+      alphabetType: 'Latin',
       folderName: '',
       flashcardsList: [],
     })
