@@ -21,12 +21,12 @@ const routes = [
   {
     path: '/learnFlashcards/:id',
     name: 'LearnFlashcards',
-    component: () => import(/* webpackChunkName: "about" */ '../views/LearnFlashcards'),
+    component: () => import(/* webpackChunkName: "about" */ '../components/FlashcardsMode/FlashcardView'),
   },
   {
     path: '/CreateCard/:id',
     name: 'CreateCard',
-    component: () => import(/* webpackChunkName: "about" */ '../views/CreateCard'),
+    component: () => import(/* webpackChunkName: "about" */ '../components/FlashcardsEditing/Flashcard'),
   },
   {
     path: '/login',
@@ -41,13 +41,18 @@ const routes = [
   {
     path: '/calligraphy/:id',
     name: 'Calligraphy',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Calligraphy'),
+    component: () => import(/* webpackChunkName: "about" */ '../components/Calligraphy/Calligraphy'),
   },
   {
     path: '/Folder/:folder',
     name: 'Folder',
     component: () => import(/* webpackChunkName: "about" */ '../components/BrowseFlashcards/DecsBrowser'), //redirects to decs browser
     props: true
+  },
+  {
+    path: '/Deck/:deck',
+    name: 'Deck',
+    component: () => import(/* webpackChunkName: "about" */ '../components/BrowseFlashcards/DeckOverview'), //redirects to decs browser
   },
 ]
 

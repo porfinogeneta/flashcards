@@ -26,23 +26,24 @@
       </div>
     </template>
     <template v-slot:ButtonExitPopUp>
-      Create New Folder
+      New Folder
     </template>
-    <button>Cancel</button>
   </Popup>
+<!--  <Loading v-show="state.isLoading" :load-description="'Loading'"/>-->
 </template>
 
 <script>
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, computed} from "vue";
 import fire from "@/utilities/fire";
 import {useStore} from 'vuex';
 import getUserFolders from "@/utilities/externalFunctions/getUserFolders";
 import Popup from "@/components/Popup";
 import {useRouter} from 'vue-router';
+import Loading from "@/LoadingComponents/Loading";
 
 export default {
   name: "FolderBrowser",
-  components: {Popup},
+  components: { Popup},
   emits: ['finished'],
   setup(_, context) {
 
@@ -50,16 +51,23 @@ export default {
 
     const router = useRouter();
 
+    // const isLoading = computed(() => {
+    //   return store.state.isLoading
+    // })
+
     const firebaseFolderRef = fire.database().ref('UsersData/' + store.state.UserData.AuthUser.uid + '/Folders');
 
     const state = reactive({
       Folders: [],
       isShowingPopUp: false,
-      folderName: ''
+      folderName: '',
+      // isLoading: true,
     })
 
-    onMounted(async () => {
+    onMounted( async () => {
       state.Folders = await getUserFolders(store.state.UserData.AuthUser.uid, fire) // gets user folders at user location
+      console.log(state.Folders, 'folders')
+      // state.isLoading = false
       context.emit('finished');
     })
 
@@ -84,7 +92,8 @@ export default {
     return {
       state,
       AddFolder,
-      MoveToDeckCreation
+      MoveToDeckCreation,
+      // isLoading
     }
   }
 }
@@ -101,7 +110,7 @@ export default {
   .Inputs {
     width: 70%;
     padding: 7px;
-    font-size: 1.5em;
+    font-size: 1em;
   }
 }
 

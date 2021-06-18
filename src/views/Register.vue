@@ -48,8 +48,8 @@ export default {
                 email: UserObject.user.email,
                 decsCreated: 0
               }
-              AuthUserRef.child('UserMeta/').set(UserProfile)
-              // router.push('/')
+              fire.database().ref('UsersData/UserMeta').set(UserProfile)
+
             },
           fire
               .auth()
@@ -71,7 +71,7 @@ export default {
                 email: UserObject.user.email,
                 decsCreated: 0
               }
-              AuthUserRef.child('UserMeta/').set(UserProfile)
+              fire.database().ref('UsersData/UserMeta').update(UserProfile)
               router.push('/')
             },
           )

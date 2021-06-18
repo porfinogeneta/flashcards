@@ -1,7 +1,8 @@
 <template>
   <section>
-    <h3>Draw by translation: </h3>
-    <p class="Info">{{Flashcard.translatedWord}}</p>
+    <p class="Info">{{Flashcard.term}}  {{Flashcard.definition}}</p>
+    <h3>Look and draw the sign:</h3>
+    <p class="Sign">{{DrawingObject}}</p>
     <Draw/>
   </section>
 </template>
@@ -11,7 +12,7 @@ import {computed} from "vue";
 import Draw from "@/utilities/mixins/Draw";
 
 export default {
-  name: "DrawByTranslation",
+  name: "LookAndDraw",
   components: {Draw},
   props: {
     drawingObject: {
@@ -39,6 +40,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.Sign {
+  font-size: 5em;
+}
 </style>

@@ -62,8 +62,8 @@ export default {
     display: grid;
     //grid-template-columns: 0.5fr 2fr 1fr;
     grid-template-rows: 0.5fr 2fr 1fr;
-    width: 100vw;
-    height: 80vh;
+    max-width: 100vw;
+    max-height: 80vh;
     @media (min-width: 1080px) {
       width: 60vw;
       height: 30vw;
@@ -77,22 +77,33 @@ export default {
       align-self: flex-start;
     }
     .properties {
-      font-size: 1.5em;
-
-    }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      text-align: center;
+      margin: auto;
+      width: 90%;
+      //height: 80%;
+      //color: #ff2d2d;
+      font-weight: bold;
+  }
     .btnManager {
       width: 100%;
       display: flex;
       justify-content: space-evenly;
       .ButtonExitPopUp {
         //width: 100%;
-        height: 100%;
-        font-size: 1.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 70%;
+        font-size: 2em;
         align-self: flex-end;
-        margin: 1em;
+        padding: 24px;
         border: none;
         border-radius: 7px;
-        padding: 1em;
+        margin: 0 7px 7px 7px;
         background-color: #06d006;
         color: #ffffff;
         &:hover {

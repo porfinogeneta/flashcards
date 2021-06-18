@@ -31,37 +31,42 @@
         </div>
         <section class="FlashcardsManager">
           <div class="FlashcardInner"
-               v-on:click="changeSides()">
-<!--               v-bind:class="[ === true ? 'changeSideAnimation' : '']"-->
-<!--          >-->
-            <div class="BasicWord" v-if="state.basicSide === 'basicWord'">
+               @click="changeSides()">
+            <div class="BasicWord" v-if="state.currentSide === 'term'">
               <div class="FrontSide">
-                <div v-if="state.flashcardObject.linkToGraphic !== ''" class="image_div">
-                  <img class="picture" :src="state.flashcardObject.linkToGraphic"/>
+                <div v-if="state.flashcardObject.link !== ''" class="image_div">
+                  <img class="picture" :src="state.flashcardObject.link"/>
                 </div>
-                {{state.flashcardObject.basicWord}}
+                {{state.flashcardObject.term}}
               </div>
-              <div v-show="state.isShowingAnswer" class="BackSide" :class="[state.isShowingAnswer === true ? 'changeSideAnimationUp' : '']">
-                {{ state.flashcardObject.translatedWord }}
-              </div>
+              <transition name="flip">
+                <div v-show="state.isShowingAnswer"
+                  class="BackSide" >
+                  {{ state.flashcardObject.definition }}
+                </div>
+              </transition>
             </div>
-            <div class="BasicWord" v-if="state.basicSide === 'translatedWord'">
-              <div  class="BackSide">
-                {{ state.flashcardObject.translatedWord }}
-              </div>
+<!--            :class="[state.isShowingAnswer === true ? 'changeSideAnimationUp' : '']"-->
+            <div class="BasicWord" v-if="state.currentSide === 'translatedWord'">
               <div class="FrontSide">
-                <div class="image_div">
-                  <img class="picture" :src="state.flashcardObject.linkToGraphic"/>
+                {{ state.flashcardObject.definition }}
+                <div class="image_div" v-if="state.flashcardObject.link !== ''">
+                  <img class="picture" :src="state.flashcardObject.link"/>
                 </div>
-                {{state.flashcardObject.basicWord}}
               </div>
+              <transition name="flip">
+                <div v-show="state.isShowingAnswer" class="BackSide">
+                  {{state.flashcardObject.term}}
+                </div>
+              </transition>
             </div>
-
-
           </div>
           <section class="changeFlashcard">
             <div>
               <button class="ChangeButtonMemorized" @click="ChangeCurrentFlashcard('right');">know</button>
+            </div>
+            <div style="" @click="LastFlashcard">
+              <font-awesome-icon style="color: #9a9a9a" :icon="['fas', 'chevron-left']" size="3x"></font-awesome-icon>
             </div>
             <div>
               <button class="ChangeButtonForgotten" @click="ChangeCurrentFlashcard('left');">again</button>
@@ -71,25 +76,25 @@
       </section>
     </div>
   </div>
-  <Popup v-if="state.isShowingPopup" @exit-popup="state.isShowingPopup = false;">
+  <Popup v-if="state.isShowingPopup" @exit-popup="SettingsFunctions">
     <template v-slot:title>Settings</template>
     <template v-slot:properties>
       <section class="settingsContainer">
         <div class="settingsElement">
           <p class="SetParagraph">shuffle:</p>
-          <font-awesome-icon class="Icon" checkIfShuffle :style="changeSettingsColor(state.settings.shuffle)"
+          <font-awesome-icon class="Icon" :style="changeSettingsColor(state.settings.shuffle)"
                              :icon="['fas', 'random']" size="2x"
-                             @click="state.settings.shuffle = !state.settings.shuffle"/></div>
+                             @click="state.settings.shuffle =! state.settings.shuffle"/></div>
         <div class="settingsElement">
           <p class="SetParagraph">audio:</p>
           <font-awesome-icon class="Icon" :style="changeSettingsColor(state.settings.audio)"
                              :icon="['fas', 'volume-up']" size="2x"
-                             @click="state.settings.audio = !state.settings.audio"/></div>
+                             @click="state.settings.audio =! state.settings.audio"/></div>
         <div class="settingsElement">
           <p class="SetParagraph">change side:</p>
           <font-awesome-icon class="Icon" :style="changeSettingsColor(state.settings.changeSide)"
                              :icon="['fas', 'exchange-alt']" size="2x"
-                             @click="state.settings.changeSide = !state.settings.changeSide"/>
+                             @click="state.settings.changeSide =! state.settings.changeSide"/>
         </div>
       </section>
     </template>
@@ -141,8 +146,7 @@ export default {
 
     const state = reactive({
       deckName: '',
-      basicSide: 'basicWord',
-      currentSide: 'basicWord',
+      currentSide: 'term',
       isShowingPopup: false,
       isLessonFinished: false,
       isShowingAnswer: false,
@@ -162,7 +166,7 @@ export default {
       settings: {
         shuffle: true,
         audio: false,
-        changeSide: false
+        changeSide: false,
       },
     })
 
@@ -178,19 +182,25 @@ export default {
     }
     // change properties in settings
     const ChangeSettings = (property) => {
-      console.log(property)
-      state.settings.shuffle =  !property
+      return property = !property
     }
 
-    const checkIfShuffle = computed(() => {
-      Restart() // resets whole lesson
-      ChangeCurrentList(state.NotShuffledToLearn) // go back to not shuffle list
-      console.log('shuffle')
-    })
-
-    const checkIfChangeSide = computed(() => {
-      Restart()
-    })
+    const SettingsFunctions = (payload) => {
+      state.isShowingPopup = false;
+      console.log(payload)
+      if (payload === 'accepted') {
+        Restart() // resets whole lesson
+        if (!state.settings.shuffle) {
+          ChangeCurrentList(state.NotShuffledToLearn) // goes back to not shuffle list
+        }else if (state.settings.shuffle){
+          ChangeCurrentList(state.FlashcardsToLearn) // goes back to shuffle list
+        }if (state.settings.changeSide) {
+          state.currentSide = 'definition'; // change side to word in your language
+        }else {
+          state.currentSide = 'term' // changes side to word in foreign language
+        }
+      }
+    }
 
     function Restart() {
       state.CurrentFlashcard = 0
@@ -200,19 +210,21 @@ export default {
 
     }
 /////////////////////////////////////////////// SETTINGS
-    watch(() => state.isShowingProgress, (newList, prevList) => {
-      if (state.isShowingProgress === false) {
-        state.LearntProgress.perLearnt = 0
-        state.LearntProgress.perNotLearnt = 0
-        state.LearntInTurn = 0
-      }
-    })
+//     watch(() => state.isShowingProgress, (newList, prevList) => {
+//       if (state.isShowingProgress === false) {
+//         state.LearntProgress.perLearnt = 0
+//         state.LearntProgress.perNotLearnt = 0
+//         state.LearntInTurn = 0
+//       }
+//     })
 
     const ShowPopup = () => {
       state.isShowingPopup = true
     }
 
-
+    // const ShowingProgress = computed(() => {
+    //   return state.isShowingProgress ? Restart() : ''
+    // })
 
     watchEffect(() => console.log(state.settings.shuffle))
 
@@ -239,6 +251,7 @@ export default {
       if (state.CurrentFlashcard > state.FlashcardsToLearn.length - 1) {
         ChangeCurrentList(state.next_flashcardsToLearn) // change what to learn next
         state.isShowingProgress = true;
+        Restart()
       }
 
       // lesson finished
@@ -248,6 +261,21 @@ export default {
 
       state.flashcardObject = state.FlashcardsToLearn[state.CurrentFlashcard] // learn another flashcard
 
+    }
+
+    function LastFlashcard() {
+
+      state.isShowingAnswer = false;
+      if (state.CurrentFlashcard != 0) { // czy można wywołać funcję czy istnieje poprzednia fiszka
+        state.CurrentFlashcard --; // dobranie się do poprzedniej fiszki
+        state.flashcardObject = state.FlashcardsToLearn[state.CurrentFlashcard] // zmiana pokazywanego obiektu
+        if (state.next_flashcardsToLearn.includes(state.flashcardObject)) { // czy obiekt jest do naucznia, czy znany
+          state.next_flashcardsToLearn.pop();
+        }else {
+          state.LearntInTurn --;
+        }
+      }
+      CountPercentages();
     }
 
     function ChangeCurrentList(list) {
@@ -290,7 +318,8 @@ export default {
       ChangeSettings,
       changeSettingsColor,
       ShowPopup,
-      checkIfShuffle
+      LastFlashcard,
+      SettingsFunctions
     }
   }
 
@@ -298,6 +327,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.flip-enter-active,
+.flip-leave-active {
+  transition: all 0.8s ease-in-out;
+}
+
+.flip-enter-from,
+.flip-leave-to {
+  transform: translateX(-1000px);
+}
 
 .settingsContainer {
   width: 100%;
@@ -395,7 +434,7 @@ export default {
           flex-direction: column;
           width: 100%;
           height: 100%;
-          background-color: #eaeaea;
+          background-color: #f4f4f4;
           .image_div {
             //margin: auto;
             padding: 7px;
@@ -413,16 +452,18 @@ export default {
           }
         }
         .BackSide {
-          //transition: transform 10s ease-in-out;
-          //transform: translateY(0);
           position: absolute;
-          background-color: #eaeaea;
+          background-color: #e3e3e3;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-direction: column;
           width: 100%;
           height: 100%;
+          transition: transform 250ms;
+          //&:hover {
+          //  transform: translateY(100%);
+          //}
         }
       }
 
@@ -436,6 +477,7 @@ export default {
       //background-color: #00ba21;
       display: flex;
       justify-content: space-evenly;
+      align-items: center;
 
       .ChangeButtonMemorized{
         background-color: $green-btn;
@@ -465,20 +507,9 @@ export default {
 
   }
 
-.changeSideAnimationUp {
-  //transform: translateY(-100px);
-  //transform: skewY(1.07rad);
-  //transition: all 1s;
-
-  //@keyframes change {
-  //  0% {
-  //    background-color: #5dee08;
-  //  }
-  //  100% {
-  //    background-color: #838383;
-  //  }
-  //}
-}
+//.changeSideAnimationUp {
+//  transition: transform 250ms, opacity 400ms;
+//}
 .changeSideAnimationDown {
   background-color:lightblue;
   //transform: translate(0,100%);

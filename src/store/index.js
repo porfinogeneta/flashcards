@@ -4,10 +4,11 @@ import fire from '../utilities/fire'
 const store = createStore({
   state() {
     return {
-      // UserFolders: [],
+      isLoading: false,
       ChosenFolder: null,
       ChosenDeck: null,
       CreationMode: false,
+      CanvasImg: '',
       // user Data
       UserData: {
         isLoggedIn: false,
@@ -36,6 +37,9 @@ const store = createStore({
     },
     ChangeChosenDeck(state, DeckPayload) {
       return state.ChosenDeck = DeckPayload
+    },
+    ChangeCanvasImg(state, payload) {
+      state.CanvasImg = payload
     }
   },
   // actions: {

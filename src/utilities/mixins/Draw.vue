@@ -6,7 +6,6 @@
       @mousemove="draw"
     >
     </canvas>
-
     <div class="canvasSettings">
       <button class="goBtn" @click="toolActive('pen')" :class="changeBtnDraw"><font-awesome-icon :icon="['fa', 'pencil-alt']"/></button>
       <button class="goBtn" @click="toolActive('eraser')" :class="changeBtnRub"><font-awesome-icon :icon="['fa', 'eraser']"/></button>
@@ -14,14 +13,17 @@
     </div>
   </div>
 
+
 </template>
 
 <script>
 import {onMounted, reactive, computed, ref, watch} from "vue";
 import {useStore} from 'vuex';
+import Modal from "@/components/Modal";
 
 export default {
   name: "Draw",
+  components: {},
   props: ['isRedraw'],
   setup(props, _) {
 
@@ -34,7 +36,8 @@ export default {
       isDrawing: false,
       X: '',
       Y: '',
-      tool: 'pen'
+      tool: 'pen',
+
     })
 
 
@@ -44,6 +47,11 @@ export default {
         clearBoard()
       }
     })
+
+    const ShowImage = computed(() => {
+      return store.state.IsShowingCanvasImg
+    })
+
 
     onMounted(() => {
       let canvas = document.querySelector('#canvas')
@@ -77,6 +85,11 @@ export default {
     }
 
     const clearBoard = () => {
+      state.isShowingModal = true
+      // var img = new Image();
+      store.commit('ChangeCanvasImg', Canvas.value.toDataURL());
+      // console.log(img.src)
+      // state.CanvasImg = img.src
       state.canvas.clearRect(0, 0, Canvas.value.width, Canvas.value.height)
     }
 

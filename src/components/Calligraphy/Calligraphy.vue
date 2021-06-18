@@ -18,6 +18,7 @@
                :drawing-object="state.Symbol"
                :flashcard="state.Current"/>
     </div>
+<!--    <p>{{state.Current.mode}}</p>-->
     <div class="navbtn">
       <button class="normalButton" type="button" @click="getAnotherFlashcard('review')">
         Draw Again
@@ -27,7 +28,15 @@
       </button>
     </div>
   </div>
-
+  <Modal v-if="state.isShowingModal" @hide-modal="state.isShowingModal = false">
+    <template v-slot:titleOfPopup>Check your answer</template>
+    <template v-slot:PropertiesToShow>
+      <section class="SymbolComparison">
+        <p class="ComparedSymbol">{{state.Symbol}}</p>
+        <img :src="CanvasImg">
+      </section>
+    </template>
+  </Modal>
 </template>
 
 <script>
@@ -35,17 +44,18 @@ import {computed, onMounted, reactive} from "vue";
 import {useRouter} from 'vue-router'
 import {shuffle} from "@/utilities/externalFunctions/shuffle";
 import {useStore} from 'vuex'
-import checkToSeeChosenDeck from '../utilities/externalFunctions/checkToSeeChosenDeck'
+import checkToSeeChosenDeck from '../../utilities/externalFunctions/checkToSeeChosenDeck'
 import {
   getFlashcardsFromStore
 } from "@/utilities/externalFunctions/getFlashcardsFromStore";
-import Redraw from "@/components/Callgraphy/Redraw";
-import LookAndDraw from "@/components/Callgraphy/LookAndDraw";
-import DrawByTranslation from "@/components/Callgraphy/DrawByTranslation";
+import Redraw from "@/components/Calligraphy/Redraw";
+import LookAndDraw from "@/components/Calligraphy/LookAndDraw";
+import DrawByTranslation from "@/components/Calligraphy/DrawByTranslation";
+import Modal from "@/components/Modal";
 
 export default {
   name: "Calligraphy",
-  components: {DrawByTranslation, LookAndDraw, Redraw},
+  components: {DrawByTranslation, LookAndDraw, Redraw, Modal},
   setup() {
 
     const store = useStore();
@@ -55,16 +65,19 @@ export default {
       flashcards: '',
       name: '',
       Current: {},
-      currentFlashcardIndex: 1,
+      currentFlashcardIndex: 0,
       CurrentFlashcards: [],
-      ReviewFlashcards: [],
-      NextFlashcards: [],
-      Symbol: ''
+      Symbol: '',
+      isShowingModal: false,
     })
 
     onMounted(() => {
       checkToSeeChosenDeck(store)
       ValidateFlashcards()
+    })
+
+    const CanvasImg = computed(() => {
+      return store.state.CanvasImg
     })
 
     function ValidateFlashcards() {
@@ -77,7 +90,7 @@ export default {
         state.flashcards = flashcards
         state.CurrentFlashcards = shuffle(flashcards)
         state.Current = state.CurrentFlashcards[state.currentFlashcardIndex]
-        getCharacters(state.Current.basicWord)
+        getCharacters(state.Current.term)
       }
     }
 
@@ -131,20 +144,15 @@ export default {
     // keep tracks of what flashcard to show
     function getAnotherFlashcard(payload) {
 
-      if (state.Current.mode === 3) {
-        state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)
-        if (state.CurrentFlashcards.length === 0){
-          router.go(-1)
-        }
-      }
+      state.isShowingModal = true
 
       if (payload === 'drawn') {
-        state.Current.mode ++
+        state.Current.mode ++;
+        store.commit('ChangeIsShowingCanvasImg', true)
       }
       state.currentFlashcardIndex ++;
       if (state.currentFlashcardIndex > (state.CurrentFlashcards.length - 1)) {
         shuffle(state.CurrentFlashcards)
-        // state.CurrentFlashcards.push(state.ReviewFlashcards, state.NextFlashcards)
         state.currentFlashcardIndex = 0;
       }
 
@@ -154,6 +162,24 @@ export default {
       state.Current = state.CurrentFlashcards[state.currentFlashcardIndex]
       getCharacters(state.Current.basicWord)
       ClearCanvas();
+
+      if (state.CurrentFlashcards.length === 1) {
+        if (state.Current.mode === 3) {
+          state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)
+          if (state.CurrentFlashcards.length === 0){
+            router.go(-1)
+          }
+        }
+      }else {
+        if (state.Current.mode === 2) {
+          state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)
+          if (state.CurrentFlashcards.length === 0){
+            router.go(-1)
+          }
+        }
+      }
+
+
     }
 
     const ClearCanvas = () => {
@@ -162,7 +188,8 @@ export default {
 
     return {
       state,
-      getAnotherFlashcard
+      getAnotherFlashcard,
+      CanvasImg
     }
   }
 
@@ -196,15 +223,19 @@ export default {
     justify-content: center;
   }
   .navbtn {
-    margin-top: 4em;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2rem;
+    margin: 1.7em auto 1.7rem auto;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
   }
 }
-
+.SymbolComparison {
+  display: flex;
+  flex-direction: column;
+  font-size: 5em;
+  .ComparedSymbol {
+    margin: auto;
+  }
+}
 
 </style>

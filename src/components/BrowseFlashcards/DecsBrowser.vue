@@ -3,15 +3,16 @@
   <section v-else class="all">
     <section class="Info">
       <h1 class="title">{{Folder}}</h1>
-      <section class="UnderTitle" @click="MoveToCreation">
+      <section class="UnderTitle">
         <div
+            @click="MoveToCreation"
             class="" id="adder"
         >
           <font-awesome-icon :icon="['fas', 'plus']"></font-awesome-icon>
         </div>
-        <span class="Icon" @click="state.isShowingPopup = true">
+        <div class="Icon" @click="state.isShowingPopup = true">
           <font-awesome-icon :icon="['fas', 'trash-alt']" size="2x"/>
-        </span>
+        </div>
       </section>
 
     </section>
@@ -25,37 +26,18 @@
       </section>
 
     </section>
-    <Modal v-if="state.isShowingModal" @hide-modal="state.isShowingModal = false">
-      <template v-slot:titleOfPopup>
-        <div class="DeckInfo">
-          <p>{{state.CurrentDeck.name}}</p>
-          <span class="bin">
-            <font-awesome-icon class="binIcon" @click="RemoveDeck" :icon="['fas', 'trash-alt']" size="1x"></font-awesome-icon>
-          </span>
-        </div>
-      </template>
-      <template v-slot:PropertiesToShow>
-        <section class="gridContainer">
-          <router-link :to="{name: 'CreateCard', params: {id: state.CurrentDeck.name}}" tag="button" class="normalButton selectMode">Edit Flashcards</router-link>
-          <router-link :to="{name: 'LearnFlashcards', params: {id: state.CurrentDeck.name}}" tag="button" class="normalButton selectMode">Learn</router-link>
-          <router-link v-if="state.CurrentDeck.alphabet === 'Non-Latin'" :to="{name: 'Calligraphy', params: {id: state.CurrentDeck.name}}" tag="button" class="normalButton selectMode">Calligraphy</router-link>
-        </section>
-      </template>
-    </Modal>
-    <Popup v-show="state.isShowingPopup"
-           @exit-popup="removeFolder">
-      <template v-slot:properties>
-        <div class="properties">
-          Remove your folder? Are you sure?
-        </div>
-      </template>
-      <template v-slot:ButtonExitPopUp >
-        Yes, remove
-      </template>
-    </Popup>
-
   </section>
-
+  <Popup v-show="state.isShowingPopup"
+         @exit-popup="RemoveFolder">
+    <template v-slot:properties>
+      <div class="properties">
+        Remove your folder? Are you sure?
+      </div>
+    </template>
+    <template v-slot:ButtonExitPopUp >
+      Yes, remove
+    </template>
+  </Popup>
 
 </template>
 
@@ -72,7 +54,7 @@ import Popup from "@/components/Popup";
 
 export default {
   name: "FlashcardsBrowser",
-  components: {Popup, Loading, Modal},
+  components: {Popup, Loading},
   props: {
     folder: {
       required: true,
@@ -113,17 +95,11 @@ export default {
 
     async function WhatDirectory(deck) {
       await getFlashcardsFromGivenDeck(FolderInfo.value.id, deck.id) // load flashcards, which are chosen
-      state.isShowingModal = true
+      let deckName = deck.name
+      router.push({name: 'Deck', params: {deck: deckName}})
+      // state.isShowingModal = true
       state.CurrentDeck = deck
-      console.log(state.CurrentDeck, 'what directory')
-    }
-
-    const RemoveDeck = async () => {
-      // removes when the bin is pressed
-      await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/Folders/${FolderInfo.value.id}/decks/DecsNames/${state.CurrentDeck.id}`).remove();
-      await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/Folders/${FolderInfo.value.id}/decks/flashcards/${state.CurrentDeck.id}`).remove();
-      state.Decks = await CreateUserDecksList(store.state.UserData.AuthUser.uid, fire, FolderInfo.value.id)
-      state.isShowingModal = false;
+      // console.log(state.CurrentDeck, 'what directory')
     }
 
     function MoveToCreation() {
@@ -134,10 +110,12 @@ export default {
       router.push({name: 'CreateCard', params: {id: 'creation'}})
     }
 
-    const removeFolder = async (payload) => {
+    const RemoveFolder = async (payload) => {
       if (payload === 'accepted') {
-        await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/Folders/${FolderInfo.value.id}`).remove();
-        router.push('/')
+        await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/Folders/${FolderInfo.value.id}`)
+            .remove()
+            .then(r => router.push('/'));
+
       }
       state.isShowingPopup = false
     }
@@ -149,9 +127,8 @@ export default {
     return {
       WhatDirectory,
       MoveToCreation,
-      RemoveDeck,
       Folder,
-      removeFolder,
+      RemoveFolder,
       state,
       ChangeShowPopUp
     }
@@ -170,16 +147,6 @@ export default {
     margin-top: 10%;
   }
 
-  .properties {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2em;
-    width: 100%;
-    height: 100%;
-    color: #ba0a0a;
-    font-weight: bold;
-  }
 
   .DeckInfo {
     display: flex;
@@ -283,9 +250,9 @@ export default {
     .Folder {
       border-radius: 18px;
       background: #dad6d6;
-      border: solid gray;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      //flex-wrap: wrap;
       align-items: center;
       justify-content: center;
       padding: 20px;
@@ -308,7 +275,10 @@ export default {
     }
 
   }
-
 }
+.properties {
+    color: #ff2d2d;
+    font-weight: bold;
+  }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <p class="Info">{{Flashcard.basicWord}} {{Flashcard.translatedWord}}</p>
+    <p class="Info">{{Flashcard.term}} {{Flashcard.definition}}</p>
     <div id="RedrawSpace">
       <Draw :isRedraw="true"/>
     </div>

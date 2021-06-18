@@ -3,6 +3,11 @@
   <div class="popup">
     <div class="popupInner">
       <header>
+        <font-awesome-icon class="Icon"
+                           :icon="['fas', 'times']"
+                           style="color: #ff5050" @click="HideModal">
+
+        </font-awesome-icon>
         <slot name="titleOfPopup">
         </slot>
       </header>
@@ -67,11 +72,13 @@ name: "Modal",
     background: #FFF;
     padding: 32px;
     border-radius: 6px;
-    //width: clamp(20vw, 30vw, 100vw);
+    position: relative;
 
-  //.titleOfPopup {
-  //  display: flex;
-  //}
+    .Icon {
+      padding: 7px;
+      position: absolute;
+      inset: 0;
+    }
 
     header {
       font-size: 40px;

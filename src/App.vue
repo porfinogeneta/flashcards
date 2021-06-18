@@ -1,7 +1,11 @@
 <template>
   <meta charset="utf-8">
   <Navbar/>
-  <router-view/>
+  <router-view v-slot="{ Component }">
+    <suspense>
+      <component :is="Component"/>
+    </suspense>
+  </router-view>
   <Loading v-show="isLoading" :load-description="'Loading...'"/>
 </template>
 

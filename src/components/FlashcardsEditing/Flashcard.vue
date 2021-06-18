@@ -2,9 +2,6 @@
   <div>
     <div class="wholeComponent" v-if="!state.isLoading">
       <section class="changeDeckName">
-<!--        <h1 style="margin-top: 5%">-->
-<!--          Deck name:-->
-<!--        </h1>-->
         <input
             class="DeckName"
             placeholder="Name your deck"
@@ -12,10 +9,8 @@
         >
       </section>
       <section class="flashcardsMeta">
-<!--        <h1 class="metaTitle">Your flashcards meta:</h1>-->
         <div>
           <select class="selectField" name="alphabet" v-model="state.alphabetType">
-<!--            <option value="" selected disabled hidden>Alphabet</option>-->
             <option class="option" selected>
               Latin
             </option>
@@ -31,17 +26,19 @@
           <div  class="flashcard"
                v-for="(card, index) in state.flashcardsList" :key="index"
           >
-            <button class="deleteButton" @click="removeflashcard(index)">x</button>
+            <button class="deleteButton" @click="removeflashcard(index)">
+              <font-awesome-icon :icon="['fas', 'times']"></font-awesome-icon>
+            </button>
             <section class="flashcardData">
-              <input type="text" class="EditText" v-model="card.basicWord">
+              <input type="text" class="EditText" maxlength="100" v-model="card.term">
               <p class="smallHint">Word</p>
             </section>
             <section class="flashcardData">
-              <input type="text" class="EditText" v-model="card.translatedWord">
+              <input type="text" class="EditText" maxlength="100" v-model="card.definition">
               <p class="smallHint">Translation</p>
             </section>
             <section class="flashcardData">
-              <input type="text" class="EditText" v-model="card.linkToGraphic">
+              <input type="text" class="EditText" maxlength="150" v-model="card.link">
               <p class="smallHint">Link to graphic</p>
             </section>
         </div>
@@ -116,9 +113,9 @@ export default {
     const AddNewFlashcard = () => {
 
       const flashcard = {
-        basicWord: '',
-        linkToGraphic: '',
-        translatedWord: '',
+        term: '',
+        link: '',
+        definition: '',
       }
 
       state.flashcardsList.push(flashcard)
@@ -143,9 +140,9 @@ export default {
 
       // always add additional flashcard
       state.flashcardsList.push({
-        basicWord: '',
-        linkToGraphic: '',
-        translatedWord: '',
+        term: '',
+        link: '',
+        definition: '',
       })
       state.isLoading = false
     }
@@ -207,7 +204,7 @@ export default {
 
     // creates validated flashcards
     function createValidFlashcards(flashcard) {
-      return flashcard.basicWord !== '' && flashcard.translatedWord !== '';
+      return flashcard.term !== '' && flashcard.definition !== '';
     }
 
 
@@ -298,7 +295,7 @@ export default {
     justify-content: center;
 
     .AddFlashcardButton {
-      width: 60%;
+      width: 80%;
       height: 3em;
       background-color: #e6e6e6;
       display: flex;
@@ -324,11 +321,14 @@ export default {
         margin: auto auto 2em;
         width: clamp(70%, 80%, 100%);
         border: 3px solid #00ba21;
-        box-shadow: 0 0 5px gray;
+        //box-shadow: 0 0 5px gray;
         border-radius: 7px;
+        position: relative;
         .deleteButton {
+          position: absolute;
+          inset: 0;
           margin-bottom: 1em;
-          border-radius: 50%;
+          border-radius: 0 0 7px 0;
           border: none;
           color: white;
           background-color: #e82709;
@@ -337,18 +337,15 @@ export default {
           cursor: pointer;
         }
         .flashcardData {
-          padding: 0.5em;
-          //margin: auto;
-          //background: #06d006;
-          //margin-right: 30px;
+          padding: 0.4em;
           display: flex;
           justify-content: center;
           align-items: center;
           flex-direction: column;
           .EditText {
-            width: 80%;
+            width: 90%;
             //height: 100%;
-            font-size: 2rem;
+            font-size: 1.5rem;
             padding: 0.5rem;
           }
           .smallHint {
