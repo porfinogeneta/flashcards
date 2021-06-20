@@ -48,9 +48,7 @@ export default {
 
     const isLoadingAsync = ref(true);
 
-    onMounted(async () => {
-      console.log('kupa')
-    })
+
     await GetGlobalFlashcards(props.id)
     checkToSeeChosenDeck(store)
     isLoadingAsync.value = false

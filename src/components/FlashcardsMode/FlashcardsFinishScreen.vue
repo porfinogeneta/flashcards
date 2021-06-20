@@ -36,25 +36,27 @@ name: "FlashcardsFinishScreen",
 <style scoped lang="scss">
 .finishScreen {
   position: fixed;
-  left: 0;
   top: 3%;
-  margin: 0;
-  width: 100%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin: auto;
+  width: 80%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   .innerInfo {
-    font-size: 30px;
+    font-size: 1.5em;
     text-align: center;
     padding: 24px;
     width: 20%;
-    height: 70%;
+    height: 60%;
     border: solid darkslateblue 4px;
     border-radius: 7px;
     box-shadow: 3px 6px #888888;
     @media only screen and (max-width: 768px) {
-      width: 100%;
+      width: 80%;
+      font-size: 1em;
     }
     .innerMessage {
       display: flex;
@@ -67,6 +69,9 @@ name: "FlashcardsFinishScreen",
         font-size: 24px;
         padding: 24px;
         margin: 24px;
+        background-color: $green-btn;
+        border: none;
+        border-radius: 7px 7px 7px 7px;
       }
     }
   }
