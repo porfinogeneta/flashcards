@@ -41,7 +41,7 @@ export default {
           store.commit('ChangeAuthUser', user)
         }else {
           console.log('not logged')
-          router.replace('/login')
+          router.replace('/global')
           store.commit('ChangeIsLoggedIn', false)
           store.commit('ChangeAuthUser', null)
         }

@@ -32,7 +32,7 @@
     <template v-slot:titleOfPopup>Check your answer</template>
     <template v-slot:PropertiesToShow>
       <section class="SymbolComparison">
-        <p class="ComparedSymbol">{{state.Symbol}}</p>
+        <p class="ComparedSymbol">{{state.lastSymbol}}</p>
         <img :src="CanvasImg">
       </section>
     </template>
@@ -68,6 +68,7 @@ export default {
       currentFlashcardIndex: 0,
       CurrentFlashcards: [],
       Symbol: '',
+      lastSymbol: '',
       isShowingModal: false,
     })
 
@@ -144,6 +145,8 @@ export default {
     // keep tracks of what flashcard to show
     function getAnotherFlashcard(payload) {
 
+      state.lastSymbol = state.Symbol
+
       state.isShowingModal = true
 
       if (payload === 'drawn') {
@@ -160,7 +163,7 @@ export default {
       console.log(state.Current)
 
       state.Current = state.CurrentFlashcards[state.currentFlashcardIndex]
-      getCharacters(state.Current.basicWord)
+      getCharacters(state.Current.term)
       ClearCanvas();
 
       if (state.CurrentFlashcards.length === 1) {
@@ -223,7 +226,7 @@ export default {
     justify-content: center;
   }
   .navbtn {
-    margin: 1.7em auto 1.7rem auto;
+    margin: 3em auto 3rem auto;
     display: flex;
     align-items: center;
     justify-content: space-evenly;

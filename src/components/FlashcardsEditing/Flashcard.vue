@@ -31,11 +31,11 @@
             </button>
             <section class="flashcardData">
               <input type="text" class="EditText" maxlength="100" v-model="card.term">
-              <p class="smallHint">Word</p>
+              <p class="smallHint">Term</p>
             </section>
             <section class="flashcardData">
               <input type="text" class="EditText" maxlength="100" v-model="card.definition">
-              <p class="smallHint">Translation</p>
+              <p class="smallHint">Definition</p>
             </section>
             <section class="flashcardData">
               <input type="text" class="EditText" maxlength="150" v-model="card.link">

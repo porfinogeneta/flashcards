@@ -4,7 +4,7 @@
       <h1>You made it - Congratulations!</h1>
       <div class="innerMessage">
         You learnt {{finishedDeckMetaData}} words!
-        <button class="BackToHome" @click="MoveToGivenRoute('/')">
+        <button class="BackToHome" @click="$router.go(-1)">
           Back to home
         </button>
       </div>

@@ -80,7 +80,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2em;
+      font-size: 1.5em;
       text-align: center;
       margin: auto;
       width: 90%;

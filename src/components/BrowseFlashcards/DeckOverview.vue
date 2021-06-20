@@ -1,14 +1,15 @@
 <template>
   <section class="container">
     <h1 class="title">{{Deck.meta.name}}</h1>
-    <section class="gridContainer">
+    <section class="gridContainer" v-if="isFromUser">
       <span class="bin normalButton" @click="state.isShowingPopup = true">
         <p style="margin: 0 7px 0 0">Delete</p>
         <font-awesome-icon style="color: #dad6d6" :icon="['fas', 'trash-alt']" size="1x"></font-awesome-icon>
       </span>
-      <router-link :to="{name: 'CreateCard', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Edit Flashcards</router-link>
+      <router-link v-if="isFromUser" :to="{name: 'CreateCard', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Edit Flashcards</router-link>
       <router-link :to="{name: 'LearnFlashcards', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Learn</router-link>
       <router-link v-if="Deck.meta.alphabet === 'Non-Latin'" :to="{name: 'Calligraphy', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Calligraphy</router-link>
+      <router-link v-if="isFromUser" :to="{name: 'Global'}" class="normalButton Global" @click="ShareDeck">Share deck</router-link>
     </section>
     <table class="overview" >
       <tr>
@@ -50,7 +51,12 @@ export default {
   components: {
     Popup
   },
-  setup() {
+  props: {
+    isComingFromUser: {
+      default: false
+    }
+  },
+  setup(props, _) {
 
     const store = useStore()
     const router = useRouter()
@@ -68,9 +74,36 @@ export default {
       isShowingPopup: false
     })
 
+    const isFromUser = computed(() => {
+      return props.isComingFromUser
+    })
+
     const FolderInfo = computed(() => {
       return store.state.ChosenFolder
     })
+
+    const Deck = computed(() => {
+      state.Flashcards = store.state.ChosenDeck.flashcards
+      return store.state.ChosenDeck
+    })
+
+    const ShareDeck = async() => {
+      let Ref = fire.database().ref('GlobalFlashcards')
+      // let UniqueID = Ref.push().key
+      let DeckName = {
+        name: Deck.value.meta.name,
+        alphabet: Deck.value.meta.alphabet,
+        length: Deck.value.meta.length,
+        author: store.state.UserData.AuthUser.displayName
+      }
+      let newMeta = Object.assign(Deck.value.meta, {author: store.state.UserData.AuthUser.displayName})
+      let FlashcardsObject = {
+        meta: newMeta,
+        flashcards: Deck.value.flashcards,
+      }
+      await fire.database().ref(`GlobalFlashcards/DeckNames/${Deck.value.id}`).update(DeckName)
+      await fire.database().ref(`GlobalFlashcards/flashcards/${Deck.value.id}`).update(FlashcardsObject)
+    }
 
     const RemoveDeck = async (payload) => {
       if (payload === 'accepted') {
@@ -86,17 +119,14 @@ export default {
 
     }
 
-    const Deck = computed(() => {
-      state.Flashcards = store.state.ChosenDeck.flashcards
-      return store.state.ChosenDeck
-    })
-
 
     return {
       state,
       Deck,
       RemoveDeck,
-      isLoadingAsync
+      isLoadingAsync,
+      ShareDeck,
+      isFromUser
     }
   }
 }
@@ -118,6 +148,13 @@ export default {
       width: 50%;
     }
 
+    .Global {
+      background-color: blue;
+      color: #dad6d6;
+      text-align: center;
+      font-weight: bold;
+    }
+
     .bin {
       background-image: linear-gradient(to right, #e13100, #ec0000);
       color: #dad6d6;
@@ -136,7 +173,6 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: 0.4s ease-out;
     }
 
   }

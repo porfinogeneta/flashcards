@@ -7,8 +7,9 @@
     </section>
     <h3 class="Header">Create Account</h3>
     <form class="LoginForm" @submit="Register">
-      <input class="inputBox enterData" type="email" placeholder="Enter your email..." v-model="Email">
-      <input class="inputBox enterData" type="password" placeholder="Password..." v-model="Password">
+      <input class="inputBox enterData" type="text" maxlength="50px" placeholder="Username..." v-model="Username">
+      <input class="inputBox enterData" type="email" maxlength="50px" placeholder="Enter your email..." v-model="Email">
+      <input class="inputBox enterData" type="password" maxlength="50px" placeholder="Password..." v-model="Password">
       <input type="submit" class="inputBox buttonLogin" value="Register">
     </form>
     <section class="LoginLink">
@@ -34,8 +35,9 @@ export default {
     //
     // })
 
-    const Email = ref('')
-    const Password = ref('')
+    const Email = ref('');
+    const Password = ref('');
+    const Username = ref('');
     const router = useRouter()
 
     const Register = () => {
@@ -43,12 +45,13 @@ export default {
           .auth()
           .createUserWithEmailAndPassword(Email.value, Password.value)
           .then(UserObject => {
-              const AuthUserRef = fire.database().ref('UsersData/' + UserObject.user.uid)
+              // const AuthUserRef = fire.database().ref('UsersData/' + UserObject.user.uid)
               const UserProfile = {
                 email: UserObject.user.email,
                 decsCreated: 0
               }
-              fire.database().ref('UsersData/UserMeta').set(UserProfile)
+              UserObject.user.updateProfile({displayName: Username.value})
+              fire.database().ref(`UsersData/${UserObject.user.uid}/UserMeta`).set(UserProfile)
 
             },
           fire
@@ -71,7 +74,7 @@ export default {
                 email: UserObject.user.email,
                 decsCreated: 0
               }
-              fire.database().ref('UsersData/UserMeta').update(UserProfile)
+              fire.database().ref(`UsersData/${UserObject.user.uid}/UserMeta`).update(UserProfile)
               router.push('/')
             },
           )
@@ -81,6 +84,7 @@ export default {
     return {
       Email,
       Password,
+      Username,
       Register,
       LoginWithGoogle
     }

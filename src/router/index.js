@@ -52,7 +52,19 @@ const routes = [
   {
     path: '/Deck/:deck',
     name: 'Deck',
-    component: () => import(/* webpackChunkName: "about" */ '../components/BrowseFlashcards/DeckOverview'), //redirects to decs browser
+    component: () => import(/* webpackChunkName: "about" */ '../components/BrowseFlashcards/DeckOverview'),
+    props: {isComingFromUser: true}
+  },
+  {
+    path: '/shared/:id',
+    name: 'globalDecs',
+    component: () => import(/* webpackChunkName: "about" */ '../components/Global/GlobalDeckOverview'),
+    props: true
+  },
+  {
+    path: '/global',
+    name: 'Global',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Global'),
   },
 ]
 

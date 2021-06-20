@@ -55,7 +55,7 @@ export default {
                 email: UserObject.user.email,
                 decsCreated: 0
               }
-              fire.database().ref('UsersData/UserMeta').update(UserProfile)
+              fire.database().ref(`UsersData/${UserObject.user.uid}/UserMeta`).update(UserProfile)
               router.push('/')
             },
           )

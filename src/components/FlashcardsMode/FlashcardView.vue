@@ -47,7 +47,7 @@
               </transition>
             </div>
 <!--            :class="[state.isShowingAnswer === true ? 'changeSideAnimationUp' : '']"-->
-            <div class="BasicWord" v-if="state.currentSide === 'translatedWord'">
+            <div class="BasicWord" v-if="state.currentSide === 'definition'">
               <div class="FrontSide">
                 {{ state.flashcardObject.definition }}
                 <div class="image_div" v-if="state.flashcardObject.link !== ''">
@@ -339,6 +339,7 @@ export default {
 }
 
 .settingsContainer {
+  //background-color: #5dee08;
   width: 100%;
   height: 100%;
   display: grid;
@@ -350,6 +351,8 @@ export default {
     grid-template-columns: auto auto auto;
   }
   .settingsElement {
+    //background-color: #ba0a0a;
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;

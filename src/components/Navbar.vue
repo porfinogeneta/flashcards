@@ -2,8 +2,16 @@
   <div id="nav">
     <router-link class="home" to="/">Home</router-link>
 <!--    <router-link class="about" to="/about">About</router-link>-->
-    <button v-if="store.state.UserData.isLoggedIn !== false"
-            class="logout" @click="isShowingPopUp = true">Logout</button>
+    <span>
+      <button v-if="isLogged"
+            class="logout" @click="isShowingPopUp = true">
+        Logout
+      </button>
+      <button v-else class="logout">
+        <router-link style="color: #f5f1f1; font-weight: bold" :to="{name: 'Login'}">Login</router-link>
+      </button>
+    </span>
+
   </div>
   <Popup v-show="isShowingPopUp" @exit-popup="Logout">
     <template v-slot:properties>
@@ -18,7 +26,7 @@
 <script>
 import fire from '../utilities/fire';
 import {useStore} from 'vuex';
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 import Popup from "@/components/Popup";
 
 export default {
@@ -29,6 +37,10 @@ export default {
     const store = useStore();
 
     const isShowingPopUp = ref(false)
+
+    const isLogged = computed(() => {
+      return store.state.UserData.isLoggedIn
+    })
 
     function Logout(payload) {
       isShowingPopUp.value = false
@@ -43,7 +55,8 @@ export default {
     return {
       Logout,
       isShowingPopUp,
-      store
+      store,
+      isLogged
     }
   }
 }
@@ -66,6 +79,7 @@ export default {
   }
   .logout {
     background: $green-main;
+    text-decoration: none;
     border: none;
     color: #f5f1f1;
     font-size: 1em;

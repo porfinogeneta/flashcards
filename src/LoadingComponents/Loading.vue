@@ -58,8 +58,12 @@ name: "Loading",
   .LoaderDescription {
     position: absolute;
     top: 70%;
-    width: 100%;
+    //width: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin: auto;
     text-align: center;
+    //background-color: #ba0a0a;
   }
 
 }

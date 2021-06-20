@@ -25,9 +25,10 @@ a {
   margin: 4px;
   padding: 7px;
   border: none;
-  box-shadow: 3px 3px rgba(0, 0, 0, 0.7);
+  //box-shadow: 3px 3px rgba(0, 0, 0, 0.7);
   &:hover {
     box-shadow: 7px 7px rgba(0, 0, 0, 0.6);
+    transition: 0.4s ease-out;
     cursor: pointer;
     @media (max-width: 768px) {
       box-shadow: 3px 3px rgba(0, 0, 0, 0.7);
