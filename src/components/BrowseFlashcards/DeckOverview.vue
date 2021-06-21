@@ -34,6 +34,7 @@
       Yes, remove
     </template>
   </Popup>
+  <Loading v-show="isLoadingAsync" v-bind:load-description="'Loading'"></Loading>
 </template>
 
 <script>
@@ -45,10 +46,12 @@ import checkToSeeChosenDeck from "@/utilities/externalFunctions/checkToSeeChosen
 import fire from "@/utilities/fire";
 import {CreateUserDecksList} from "@/utilities/externalFunctions/CreateUserDecksList";
 import Popup from "@/components/Popup";
+import Loading from "@/LoadingComponents/Loading";
 
 export default {
   name: "DeckView",
   components: {
+    Loading,
     Popup
   },
   props: {
@@ -101,8 +104,10 @@ export default {
         meta: newMeta,
         flashcards: Deck.value.flashcards,
       }
+      isLoadingAsync.value = true
       await fire.database().ref(`GlobalFlashcards/DeckNames/${Deck.value.id}`).update(DeckName)
       await fire.database().ref(`GlobalFlashcards/flashcards/${Deck.value.id}`).update(FlashcardsObject)
+      isLoadingAsync.value = false
     }
 
     const RemoveDeck = async (payload) => {

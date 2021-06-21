@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
     <router-link class="home" to="/">Home</router-link>
-<!--    <router-link class="about" to="/about">About</router-link>-->
+    <router-link class="global" :to="{name: 'Global'}">Global</router-link>
     <span>
       <button v-if="isLogged"
             class="logout" @click="isShowingPopUp = true">
@@ -74,7 +74,7 @@ export default {
   .home {
     color: #f5f1f1;
   }
-  .about {
+  .global {
     color: #f5f1f1;
   }
   .logout {

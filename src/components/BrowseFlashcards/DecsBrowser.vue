@@ -1,5 +1,5 @@
 <template>
-  <Loading v-if="state.isLoading" :load-description="'Getting decks...'"></Loading>
+  <Loading v-if="state.isLoading" :load-description="state.loadInfo"></Loading>
   <section v-else class="all">
     <section class="Info">
       <h1 class="title">{{Folder}}</h1>
@@ -70,7 +70,8 @@ export default {
       isShowingPopup: false,
       CurrentDeck: '',
       DeckName: '',
-      toDelete: false
+      toDelete: false,
+      loadInfo: 'Getting decks...'
     })
 
     // gets prop from router
@@ -94,7 +95,10 @@ export default {
 
 
     async function WhatDirectory(deck) {
+      state.isLoading = true
+      state.loadInfo = 'Deck...'
       await getFlashcardsFromGivenDeck(FolderInfo.value.id, deck.id) // load flashcards, which are chosen
+      state.isLoading = false
       let deckName = deck.name
       router.push({name: 'Deck', params: {deck: deckName}})
       // state.isShowingModal = true
@@ -112,10 +116,12 @@ export default {
 
     const RemoveFolder = async (payload) => {
       if (payload === 'accepted') {
+        state.loadInfo = 'Removing'
+        state.isLoading = true
         await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/Folders/${FolderInfo.value.id}`)
             .remove()
             .then(r => router.push('/'));
-
+            state.isLoading = false
       }
       state.isShowingPopup = false
     }
