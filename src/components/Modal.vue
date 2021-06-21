@@ -1,4 +1,5 @@
 <template>
+  tesr
   <section class="outside" @click="HideModal"></section>
   <div class="popup">
     <div class="popupInner">
