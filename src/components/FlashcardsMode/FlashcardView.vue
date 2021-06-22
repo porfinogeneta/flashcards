@@ -34,7 +34,7 @@
                @click="changeSides()">
             <div class="BasicWord" v-if="state.currentSide === 'term'">
               <div class="FrontSide">
-                <div v-if="state.flashcardObject.link !== ''" class="image_div">
+                <div v-if="state.flashcardObject.link" class="image_div">
                   <img class="picture" :src="state.flashcardObject.link"/>
                 </div>
                 {{state.flashcardObject.term}}
@@ -50,7 +50,7 @@
             <div class="BasicWord" v-if="state.currentSide === 'definition'">
               <div class="FrontSide">
                 {{ state.flashcardObject.definition }}
-                <div class="image_div" v-if="state.flashcardObject.link !== ''">
+                <div class="image_div" v-if="state.flashcardObject.link">
                   <img class="picture" :src="state.flashcardObject.link"/>
                 </div>
               </div>
@@ -383,7 +383,7 @@ export default {
 }
 
 .FlashcardWrapper {
-  margin-top: 2rem;
+  margin-top: 1rem;
   height: auto;
   .ProgressMng {
     //background-color: #5dee08;

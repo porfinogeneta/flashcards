@@ -133,7 +133,13 @@ export default {
       return string
           .replaceAll(' ', '')
           .replaceAll('  ', '')
+          .replaceAll('   ', '')
+          .replaceAll('    ', '')
+          .replaceAll(' (', '')
+          .replaceAll(' )', '')
           .replaceAll(')', '')
+          .replaceAll("（", '')
+          .replaceAll("）", '')
           .replaceAll('(', '')
           .replaceAll('[', '')
           .replaceAll(']', '')
