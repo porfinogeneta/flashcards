@@ -16,7 +16,7 @@
         <th>Term</th>
         <th>Definition</th>
       </tr>
-      <tr v-for="(flashcard, index) in state.Flashcards" :key="index">
+      <tr v-for="(flashcard, index) in Deck.flashcards" :key="index">
         <td class="term">{{flashcard.term}}</td>
         <td class="definition">{{flashcard.definition}}</td>
       </tr>

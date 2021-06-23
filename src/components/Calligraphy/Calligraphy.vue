@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import {computed, onMounted, reactive} from "vue";
+import {computed, onMounted, reactive, watchEffect} from "vue";
 import {useRouter} from 'vue-router'
 import {shuffle} from "@/utilities/externalFunctions/shuffle";
 import {useStore} from 'vuex'
@@ -80,6 +80,7 @@ export default {
     const CanvasImg = computed(() => {
       return store.state.CanvasImg
     })
+    watchEffect(() => console.log(store.state.ChosenDeck, 'calligrapy'))
 
     function ValidateFlashcards() {
       let flashcards = []
@@ -106,7 +107,7 @@ export default {
       let CharList = [];
       let newString = replaced(string)
 
-      console.log(newString, 'new string')
+      // console.log(newString, 'new string')
 
       for (let i = 0; i < newString.length; i++){
         CharList.push(newString[i])
@@ -118,10 +119,10 @@ export default {
         // console.log(code)
         if (48 < code && code < 696) {
           Letters.push(character)
-          console.log(Letters, 'letters')
+          // console.log(Letters, 'letters')
         }else {
           Symbol.push(character)
-          console.log(Symbol, 'symbol')
+          // console.log(Symbol, 'symbol')
           // Symbol.push(character)
           // console.log(Symbol)
         }
@@ -157,7 +158,6 @@ export default {
 
       if (payload === 'drawn') {
         state.Current.mode ++;
-        store.commit('ChangeIsShowingCanvasImg', true)
       }
       state.currentFlashcardIndex ++;
       if (state.currentFlashcardIndex > (state.CurrentFlashcards.length - 1)) {
@@ -166,20 +166,30 @@ export default {
       }
 
 
-      console.log(state.Current)
+      // console.log(state.Current)
 
-      state.Current = state.CurrentFlashcards[state.currentFlashcardIndex]
-      getCharacters(state.Current.term)
+      state.Current = state.CurrentFlashcards[state.currentFlashcardIndex] // gets from imported list current index
+      getCharacters(state.Current.term) // prepares non-latin symbols
       ClearCanvas();
 
 
+      //handles behaviour when there is no term in non-latin alphabet on current flashcard
+      if (state.Symbol === ''){
+        console.log('kupa')
+        state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)
+      }
+
+      // when one left
       if (state.CurrentFlashcards.length === 1) {
         if (state.Current.mode === 3) {
           state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)
           if (state.CurrentFlashcards.length === 0){
+
             router.go(-1)
+            // router.push({name: 'Deck', params: {deck: store.state.ChosenDeck.meta.name}})
           }
         }
+      // when plenty left
       }else {
         if (state.Current.mode === 2) {
           state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)

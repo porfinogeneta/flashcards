@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="wholeComponent" v-if="!state.isLoading">
+    <div class="wholeComponent">
       <section class="changeDeckName">
         <input
             class="DeckName"
@@ -52,12 +52,8 @@
           <p v-else>Name your folder</p>
         </div>
       </div>
-    <div v-else>
-      loading/..
-    </div>
   </div>
-
-
+  <Loading v-show="state.isLoading" :load-description="'Creating...'"></Loading>
 </template>
 
 <script>
@@ -67,11 +63,12 @@ import {reactive, ref, computed, onMounted, watch} from 'vue';
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import {getFlashcardsFromStore} from "@/utilities/externalFunctions/getFlashcardsFromStore";
+import Loading from "@/LoadingComponents/Loading";
 
 
 export default {
   name: "Flashcard",
-
+  components: {Loading},
   setup: function () {
 
     const store = useStore();
@@ -142,7 +139,6 @@ export default {
         link: '',
         definition: '',
       })
-      state.isLoading = false
     }
 
 
@@ -169,22 +165,26 @@ export default {
           // create unique ID for both folder and flashcards lists
           var UniqueID = GeneralRef.push().key;
           // console.log(UniqueID, 'unique id')
+          state.isLoading = true
           await FlashcardContentRef.child(UniqueID).set(
               FlashcardsObject,
           )
           await FlashcardDeckRef.child(UniqueID).set(
               FolderObject
           )
+          state.isLoading = false
           store.state.CreationMode = false
         }else {
           // console.log(store.state.ChosenFolder.id)
           // do this when editing flashcards
+          state.isLoading = true
           await FlashcardDeckRef.child(store.state.ChosenDeck.id).update(
               {
                 name: state.folderName,
                 length: flashcardsListValidate.length,
                 alphabet: state.alphabetType
               })
+          state.isLoading = false
           await FlashcardContentRef.child(store.state.ChosenDeck.id).update(
               {
             meta: {
@@ -196,6 +196,16 @@ export default {
           })
         }
       }else return
+       //create wanted flashcard object
+      const flashcardObject =
+        { meta: {
+            name: state.folderName,
+            length: flashcardsListValidate.length,
+            alphabet: state.alphabetType
+          },
+          flashcards: flashcardsListValidate}
+      // change current chosenDeck
+      store.commit('ChangeChosenDeck', flashcardObject)
       // exit this mode
       router.go(-1)
     }

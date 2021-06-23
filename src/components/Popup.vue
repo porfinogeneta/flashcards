@@ -59,6 +59,8 @@ export default {
   .foreground {
     border-radius: 7px 7px 7px 7px;
     position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
     display: grid;
     //grid-template-columns: 0.5fr 2fr 1fr;
     grid-template-rows: 0.5fr 2fr 1fr;

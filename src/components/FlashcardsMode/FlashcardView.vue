@@ -4,7 +4,7 @@
       <FlashcardsFinishScreen v-bind:finished-deck-metaData="state.flashcards.length"/>
     </div>
     <div v-else>
-      <Modal v-if="state.isShowingProgress" @hide-modal="state.isShowingProgress = false">
+      <Modal v-if="state.isShowingProgress" @hide-modal="state.isShowingProgress = false; Restart()">
         <template v-slot:titleOfPopup>
           Your Progress
         </template>
@@ -207,26 +207,15 @@ export default {
       state.LearntProgress.perLearnt = 0
       state.LearntProgress.perNotLearnt = 0
       state.LearntInTurn = 0
-
     }
 /////////////////////////////////////////////// SETTINGS
-//     watch(() => state.isShowingProgress, (newList, prevList) => {
-//       if (state.isShowingProgress === false) {
-//         state.LearntProgress.perLearnt = 0
-//         state.LearntProgress.perNotLearnt = 0
-//         state.LearntInTurn = 0
-//       }
-//     })
+
 
     const ShowPopup = () => {
       state.isShowingPopup = true
     }
 
-    // const ShowingProgress = computed(() => {
-    //   return state.isShowingProgress ? Restart() : ''
-    // })
-
-    watchEffect(() => console.log(state.settings.shuffle))
+    watchEffect(() => console.log(state.LearntInTurn))
 
 
     // when buttons know/again are pressed
@@ -234,7 +223,7 @@ export default {
       state.isShowingAnswer = false;
       if (direction === 'right') {
         // data used later to show progress
-        state.LearntInTurn ++
+        state.LearntInTurn += 1
       }else {
         // added to learn later
         state.next_flashcardsToLearn.push(state.FlashcardsToLearn[state.CurrentFlashcard])
@@ -249,9 +238,8 @@ export default {
 
       // start another learn period
       if (state.CurrentFlashcard > state.FlashcardsToLearn.length - 1) {
-        ChangeCurrentList(state.next_flashcardsToLearn) // change what to learn next
         state.isShowingProgress = true;
-        Restart()
+        ChangeCurrentList(state.next_flashcardsToLearn) // change what to learn next
       }
 
       // lesson finished
@@ -264,9 +252,8 @@ export default {
     }
 
     function LastFlashcard() {
-
       state.isShowingAnswer = false;
-      if (state.CurrentFlashcard != 0) { // czy można wywołać funcję czy istnieje poprzednia fiszka
+      if (state.CurrentFlashcard !== 0) { // czy można wywołać funcję czy istnieje poprzednia fiszka
         state.CurrentFlashcard --; // dobranie się do poprzedniej fiszki
         state.flashcardObject = state.FlashcardsToLearn[state.CurrentFlashcard] // zmiana pokazywanego obiektu
         if (state.next_flashcardsToLearn.includes(state.flashcardObject)) { // czy obiekt jest do naucznia, czy znany
@@ -319,7 +306,8 @@ export default {
       changeSettingsColor,
       ShowPopup,
       LastFlashcard,
-      SettingsFunctions
+      SettingsFunctions,
+      Restart
     }
   }
 

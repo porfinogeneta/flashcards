@@ -29,7 +29,7 @@
       New Folder
     </template>
   </Popup>
-<!--  <Loading v-show="state.isLoading" :load-description="'Loading'"/>-->
+  <Loading v-show="state.isLoading" :load-description="'Loading'"/>
 </template>
 
 <script>
@@ -43,7 +43,7 @@ import Loading from "@/LoadingComponents/Loading";
 
 export default {
   name: "FolderBrowser",
-  components: { Popup},
+  components: { Popup, Loading },
   emits: ['finished'],
   setup(_, context) {
 
@@ -61,12 +61,13 @@ export default {
       Folders: [],
       isShowingPopUp: false,
       folderName: '',
-      // isLoading: true,
+      isLoading: true,
     })
 
     onMounted( async () => {
       state.Folders = await getUserFolders(store.state.UserData.AuthUser.uid, fire) // gets user folders at user location
       console.log(state.Folders, 'folders')
+      state.isLoading = false
       // state.isLoading = false
       context.emit('finished');
     })
@@ -75,12 +76,14 @@ export default {
     const AddFolder = async () => {
       state.isShowingPopUp = !state.isShowingPopUp
       if (state.isShowingPopUp === false && state.folderName){
+        state.isLoading = true
         let key = firebaseFolderRef.push().key // creates random key/id
         await firebaseFolderRef.child(key).set({ // sets given folder at this id
           name: state.folderName,
           // decs: []
-        })
+        }).then(r => state.folderName = '')
         state.Folders = await getUserFolders(store.state.UserData.AuthUser.uid, fire) // rests state.Folders, after folder added
+        state.isLoading = false
       }
     }
 
