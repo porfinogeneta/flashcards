@@ -32,6 +32,7 @@ export default {
 
 
     onBeforeMount(() => {
+      console.log(fire.auth().currentUser)
       isLoading.value = true
       fire.auth().onAuthStateChanged((user) => {
         if (user) {

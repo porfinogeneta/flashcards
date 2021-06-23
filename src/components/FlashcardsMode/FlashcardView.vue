@@ -37,12 +37,12 @@
                 <div v-if="state.flashcardObject.link" class="image_div">
                   <img class="picture" :src="state.flashcardObject.link"/>
                 </div>
-                {{state.flashcardObject.term}}
+                <p class="text">{{state.flashcardObject.term}}</p>
               </div>
               <transition name="flip">
                 <div v-show="state.isShowingAnswer"
                   class="BackSide" >
-                  {{ state.flashcardObject.definition }}
+                  <p class="text">{{ state.flashcardObject.definition }}</p>
                 </div>
               </transition>
             </div>
@@ -407,7 +407,7 @@ export default {
     .FlashcardInner {
       overflow: hidden;
       //position: relative;
-      width: 80%;
+      width: 85%;
       height: 90%;
       //display: grid;
       //grid-template-rows: 4fr 6fr;
@@ -419,16 +419,20 @@ export default {
       //align-items: center;
       //justify-content: center;
       //flex-direction: column;
-      font-size: 3em;
+      font-size: 2em;
 
       @media (min-width: 1080px) {
         width: 60%;
+        font-size: 4em;
       }
 
       .BasicWord {
         width: 100%;
         height: 100%;
         position: relative;
+        .text {
+          //word-wrap: anywhere;
+        }
         .FrontSide {
           position: absolute;
           display: flex;
@@ -456,11 +460,12 @@ export default {
         }
         .BackSide {
           position: absolute;
-          background-color: #e3e3e3;
+          background-color: #f3f3f3;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-direction: column;
+          //text-align: center;
           width: 100%;
           height: 100%;
           transition: transform 250ms;
@@ -494,7 +499,7 @@ export default {
         }
       }
       .ChangeButtonForgotten {
-        background-color: crimson;
+        background-color: #c80a2e;
         border-radius: 7px 7px 7px 7px;
         padding: 7px;
         font-size: 2em;

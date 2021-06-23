@@ -172,6 +172,7 @@ export default {
       getCharacters(state.Current.term)
       ClearCanvas();
 
+
       if (state.CurrentFlashcards.length === 1) {
         if (state.Current.mode === 3) {
           state.CurrentFlashcards.splice(state.currentFlashcardIndex, 1)

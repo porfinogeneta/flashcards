@@ -104,8 +104,6 @@ export default {
     })
 
 
-
-
     function removeflashcard(index) {
       state.flashcardsList.splice(index, 1)
     }

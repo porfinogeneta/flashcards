@@ -32,11 +32,13 @@ name: "Loading",
   height: 100vh;
   width: 100vw;
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
   background: white;
   display: flex;
-  //justify-content: center;
-  //align-items: center;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   .loader {
     margin: auto;
@@ -59,13 +61,12 @@ name: "Loading",
     position: absolute;
     top: 70%;
     width: 80%;
+    text-align: center;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 0 auto;
-    text-align: center;
     //background-color: #ba0a0a;
   }
 

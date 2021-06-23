@@ -188,8 +188,10 @@ export default {
 
   }
   .overview {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
     font-size: 1.2em;
-    margin: auto;
     width: 90%;
     @media (min-width: 1080px) {
       width: 70%;

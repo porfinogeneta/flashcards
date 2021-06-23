@@ -16,7 +16,7 @@
       </tr>
     </table>
   </section>
-  <Loading v-show="isLoadingAsync" :load-description="'Loading Flashcards'"></Loading>
+  <Loading v-if="isLoadingAsync" :load-description="'Loading Flashcards'"></Loading>
 </template>
 
 <script>
@@ -44,11 +44,11 @@ export default {
   async setup(props, _) {
 
     const store = useStore();
-    const router = useRouter();
+    // const router = useRouter();
 
     const isLoadingAsync = ref(true);
 
-
+    isLoadingAsync.value = true
     await GetGlobalFlashcards(props.id)
     checkToSeeChosenDeck(store)
     isLoadingAsync.value = false
@@ -64,7 +64,7 @@ export default {
     const state = reactive({
       Deck: '',
       Flashcards: '',
-      isShowingPopup: false
+      isShowingPopup: false,
     })
 
     const isFromUser = computed(() => {
@@ -93,6 +93,7 @@ export default {
 .container {
   padding: 1em;
   margin-top: 3em;
+  //background-color: #5dee08;
   .gridContainer {
     width: 90%;
     //background-color: #ba0a0a;
@@ -129,9 +130,13 @@ export default {
   .modesOverview {
 
   }
-  .overview {
+
+}
+.overview {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
     font-size: 1.2em;
-    margin: auto;
     width: 90%;
     @media (min-width: 1080px) {
       width: 70%;
@@ -164,6 +169,5 @@ export default {
     }
 
   }
-}
 
 </style>
