@@ -6,12 +6,12 @@ export async function GetGlobalFlashcards(DeckID) {
         .once('value')
         .then((snapshot) => {
         const data = snapshot.val();
-        console.log(data)
+        // console.log(data)
         store.commit('ChangeChosenDeck', {
             id: DeckID,
             meta: data.meta,
             flashcards: data.flashcards,
         })
-            console.log(store.state.ChosenDeck, 'deck')
+            // console.log(store.state.ChosenDeck, 'deck')
     })
 }

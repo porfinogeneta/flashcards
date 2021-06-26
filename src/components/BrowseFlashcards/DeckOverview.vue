@@ -1,15 +1,16 @@
 <template>
   <section class="container">
     <h1 class="title">{{Deck.meta.name}}</h1>
-    <section class="gridContainer" v-if="isFromUser">
+    <section class="gridContainer">
       <span class="bin normalButton" @click="state.isShowingPopup = true">
         <p style="margin: 0 7px 0 0">Delete</p>
         <font-awesome-icon style="color: #dad6d6" :icon="['fas', 'trash-alt']" size="1x"></font-awesome-icon>
       </span>
-      <router-link v-if="isFromUser" :to="{name: 'CreateCard', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Edit Flashcards</router-link>
+      <router-link :to="{name: 'CreateCard', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Edit Flashcards</router-link>
       <router-link :to="{name: 'LearnFlashcards', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Learn</router-link>
       <router-link v-if="Deck.meta.alphabet === 'Non-Latin'" :to="{name: 'Calligraphy', params: {id: Deck.meta.name}}" tag="button" class="normalButton selectMode">Calligraphy</router-link>
-      <router-link v-if="isFromUser" :to="{name: 'Global'}" class="normalButton Global" @click="ShareDeck">Share deck</router-link>
+      <router-link v-if="!state.isShared" :to="{name: 'Global'}" class="normalButton Global" @click="ShareDeck">Share deck</router-link>
+      <button v-else class="normalButton Global Cancel" @click="CancelShare">Cancel Sharing</button>
     </section>
     <table class="overview" >
       <tr>
@@ -54,11 +55,6 @@ export default {
     Loading,
     Popup
   },
-  props: {
-    isComingFromUser: {
-      default: false
-    }
-  },
   setup(props, _) {
 
     const store = useStore()
@@ -68,25 +64,33 @@ export default {
 
     onBeforeMount(() => {
       checkToSeeChosenDeck(store);
+      CheckIfShared()
       // Validate();
     })
 
     const state = reactive({
       Deck: '',
       Flashcards: '',
-      isShowingPopup: false
+      isShowingPopup: false,
+      isShared: false,
+      deckShared: {} // object with shared decs
     })
-
-    const isFromUser = computed(() => {
-      return props.isComingFromUser
-    })
+    // cancel share
+    const CancelShare = async () => {
+      isLoadingAsync.value = true
+      await fire.database().ref(`GlobalFlashcards/DeckNames/${Deck.value.id}`).remove()
+      await fire.database().ref(`GlobalFlashcards/flashcards/${Deck.value.id}`).remove()
+      await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/UserMeta/decksShared/${state.deckShared.key}`).remove()
+      state.isShared = false
+      isLoadingAsync.value = false
+    }
 
     const FolderInfo = computed(() => {
       return store.state.ChosenFolder
     })
 
     const Deck = computed(() => {
-      state.Flashcards = store.state.ChosenDeck.flashcards
+      // state.Flashcards = store.state.ChosenDeck.flashcards
       return store.state.ChosenDeck
     })
 
@@ -107,7 +111,37 @@ export default {
       isLoadingAsync.value = true
       await fire.database().ref(`GlobalFlashcards/DeckNames/${Deck.value.id}`).update(DeckName)
       await fire.database().ref(`GlobalFlashcards/flashcards/${Deck.value.id}`).update(FlashcardsObject)
+      await fire.database().ref(`UsersData/${store.state.UserData.AuthUser.uid}/UserMeta/decksShared`).push({id: Deck.value.id, name: Deck.value.meta.name})
+      CheckIfShared()
       isLoadingAsync.value = false
+    }
+
+    const CheckIfShared =  async () => {
+      let shares = []
+      await fire.database()
+          .ref(`UsersData/${store.state.UserData.AuthUser.uid}/UserMeta/decksShared`)
+          .on('value', (snapshot) => {
+            const data = snapshot.val()
+            Object.keys(data).forEach(key => {
+              shares.push({
+                key: key,
+                id: data[key].id,
+                name: data[key].name
+              })
+            })
+            console.log(data)
+            shares.forEach(checkForCurrentFolder)
+          })
+      console.log(state.isShared, 'shared?')
+    }
+
+    const checkForCurrentFolder = (data) => {
+      if (data.id === Deck.value.id) {
+        state.deckShared = data
+        return state.isShared = true
+      }else {
+        return  state.isShared = false
+      }
     }
 
     const RemoveDeck = async (payload) => {
@@ -131,7 +165,7 @@ export default {
       RemoveDeck,
       isLoadingAsync,
       ShareDeck,
-      isFromUser
+      CancelShare
     }
   }
 }
@@ -159,6 +193,9 @@ export default {
       text-align: center;
       font-weight: bold;
     }
+    //.Cancel {
+    //  background-color: #f0690c;
+    //}
 
     .bin {
       background-image: linear-gradient(to right, #e13100, #ec0000);

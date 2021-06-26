@@ -48,10 +48,6 @@ export default {
       }
     })
 
-    const ShowImage = computed(() => {
-      return store.state.IsShowingCanvasImg
-    })
-
 
     onMounted(() => {
       let canvas = document.querySelector('#canvas')
@@ -209,6 +205,7 @@ export default {
   //display: flex;
   margin-bottom: 2rem;
   //background: #06d006;
+  position: relative;
   #canvas {
     //width: 40vh;
     //height: 40vh;
@@ -216,7 +213,9 @@ export default {
     border-radius: 7px;
   }
   .canvasSettings {
-    //background-color: #ba0a0a;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -48,7 +48,7 @@ export default {
               // const AuthUserRef = fire.database().ref('UsersData/' + UserObject.user.uid)
               const UserProfile = {
                 email: UserObject.user.email,
-                decsCreated: 0
+                decksShared: '',
               }
               UserObject.user.updateProfile({displayName: Username.value})
               fire.database().ref(`UsersData/${UserObject.user.uid}/UserMeta`).set(UserProfile)
@@ -72,7 +72,7 @@ export default {
               const AuthUserRef = fire.database().ref('UsersData/' + UserObject.user.uid)
               const UserProfile = {
                 email: UserObject.user.email,
-                decsCreated: 0
+                decksShared: '',
               }
               fire.database().ref(`UsersData/${UserObject.user.uid}/UserMeta`).update(UserProfile)
               router.push('/')

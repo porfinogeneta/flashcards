@@ -10,13 +10,13 @@
         <th>Term</th>
         <th>Definition</th>
       </tr>
-      <tr v-for="(flashcard, index) in state.Flashcards" :key="index">
+      <tr v-for="(flashcard, index) in Flashcards" :key="index">
         <td class="term">{{flashcard.term}}</td>
         <td class="definition">{{flashcard.definition}}</td>
       </tr>
     </table>
   </section>
-  <Loading v-if="isLoadingAsync" :load-description="'Loading Flashcards'"></Loading>
+  <Loading v-show="isLoadingAsync" :load-description="'Loading Flashcards'"></Loading>
 </template>
 
 <script>
@@ -34,25 +34,30 @@ export default {
 
   },
   props: {
-    isComingFromUser: {
-      default: false
-    },
     id: {
       type: String
     }
   },
-  async setup(props, _) {
+setup(props, _) {
 
     const store = useStore();
     // const router = useRouter();
 
     const isLoadingAsync = ref(true);
 
-    isLoadingAsync.value = true
-    await GetGlobalFlashcards(props.id)
-    checkToSeeChosenDeck(store)
-    isLoadingAsync.value = false
+    onMounted(async () => {
+      isLoadingAsync.value = true
+      await GetGlobalFlashcards(props.id)
+      checkToSeeChosenDeck(store)
+      isLoadingAsync.value = false
+      console.log(Deck.value)
+    })
 
+    // isLoadingAsync.value = true
+    // await GetGlobalFlashcards(props.id)
+    // checkToSeeChosenDeck(store)
+    // isLoadingAsync.value = false
+    // console.log(Deck.value)
     // const getId = computed(() => {
     //   return props.id
     // })
@@ -67,14 +72,13 @@ export default {
       isShowingPopup: false,
     })
 
-    const isFromUser = computed(() => {
-      return props.isComingFromUser
+    const Flashcards = computed(() => {
+      return store.state.ChosenDeck.flashcards
     })
 
 
     const Deck = computed(() => {
-      console.log(store.state)
-      state.Flashcards = store.state.ChosenDeck.flashcards
+      console.log(store.state, 'state')
       return store.state.ChosenDeck
     })
 
@@ -82,7 +86,7 @@ export default {
     return {
       state,
       isLoadingAsync,
-      isFromUser,
+      Flashcards,
       Deck
     }
   }
