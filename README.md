@@ -1,5 +1,8 @@
 # flashcards
 
+## Description
+Web aplication useful to learn foreign languages. Different language mods available, for example chinese characters writing.
+
 ## Project setup
 ```
 npm install
